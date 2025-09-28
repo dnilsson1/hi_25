@@ -152,14 +152,14 @@ export const App = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-slate-100 flex flex-col items-center p-4 sm:p-6 lg:p-8">
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-md mx-auto">
-          <header className="flex justify-center items-center mb-6">
+          <header className="flex justify-center items-center mb-4">
               <KukaLogo className="w-48 h-auto" />
           </header>
 
-          <main className="bg-white p-6 rounded-2xl shadow-md">
-              <div className="flex justify-end gap-2">
+          <main className="bg-white p-6 rounded-2xl shadow-lg">
+              <div className="flex justify-end gap-2 mb-4">
                   <button
                       onClick={handleProfileToggle}
                       className="text-slate-400 hover:text-kuka-orange transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-kuka-orange rounded-full p-1"
@@ -185,14 +185,14 @@ export const App = () => {
                 setPort={setPort}
               />
 
-              <div className="mt-6 text-center p-3 bg-slate-100 rounded-lg">
+              <div className="text-center p-3 bg-slate-100 rounded-lg">
                 <span className="text-sm font-medium text-slate-600">Current Workstation: </span>
                 <span className="font-bold text-kuka-dark">
                   {getCurrentProfileName()}
                 </span>
               </div>
               
-              <div className="my-6">
+              <div className="my-4">
                   <StatusDisplay status={status.type} message={status.message} />
               </div>
 
@@ -208,7 +208,7 @@ export const App = () => {
                 ))}
               </div>
           </main>
-          <footer className="text-center mt-6 text-xs text-slate-500">
+          <footer className="text-center mt-8 text-xs text-slate-500">
               <p>AMR Mission Control Interface</p>
               <p>Created by: Daniel Nilsson</p>
           </footer>
