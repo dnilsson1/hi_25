@@ -235,7 +235,7 @@
         const [loadingMission, setLoadingMission] = useState(null);
         
         const [ipAddress, setIpAddress] = useState(() => localStorage.getItem('kukaIpAddress') || '192.168.1.100');
-        const [port, setPort] = useState(() => localStorage.getItem('kukaPort') || '10870'); // Corrected Port
+        const [port, setPort] = useState(() => localStorage.getItem('kukaPort') || '8081');
         const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
         useEffect(() => {
@@ -258,28 +258,20 @@
             return;
           }
           
+          const missionCode = mission.templateCode;
           const timestamp = Date.now();
-          // Corrected Payload structure
-          const payload = {
-              orgId: "factory",
-              requestId: `mission-${timestamp}`,
-              missionCode: `job-${timestamp}`,
+          const missionPayload = {
+              orgId: "UNIVERSAL",
+              requestId: `req-${missionCode}-${timestamp}`,
+              missionCode: `mission-${missionCode}-${timestamp}`,
               missionType: "MOVE",
-              viewBoardType: "",
               robotType: "LIFT",
-              robotModels: [],
-              robotIds: [],
+              templateCode: missionCode,
               priority: 1,
-              containerType: "",
-              containerCode: "",
-              templateCode: mission.templateCode,
               lockRobotAfterFinish: false,
-              unlockRobotId: "",
-              unlockMissionCode: "",
-              idleNode: ""
           };
 
-          console.log('Dispatching Mission:', JSON.stringify(payload, null, 2));
+          console.log('Dispatching Mission:', JSON.stringify(missionPayload, null, 2));
           setStatus({ type: 'loading', message: `Dispatching '${mission.label}'...` });
           setLoadingMission(mission.label);
 
@@ -291,20 +283,17 @@
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify(payload),
+              body: JSON.stringify(missionPayload),
             });
 
-            let responseData;
-            const contentType = response.headers.get("content-type");
-            if (contentType && contentType.indexOf("application/json") !== -1) {
-                responseData = await response.json();
-            }
+            const responseData = await response.json();
 
-            if (!response.ok) {
-                const apiMessage = responseData?.message || `HTTP Error: ${response.statusText}`;
-                throw new Error(apiMessage);
+            if (!response.ok || !responseData.success) {
+              const apiMessage = responseData.message || `API Error Code: ${responseData.code || 'N/A'}`;
+              throw new Error(apiMessage);
             }
             
+            console.log('Success Response:', responseData);
             setStatus({ type: 'success', message: `Mission '${mission.label}' dispatched successfully!` });
 
           } catch (error) {
