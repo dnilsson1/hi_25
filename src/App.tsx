@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { PROFILE_2_MISSIONS, PROFILE_3_MISSIONS, ORG_ID } from './constants';
 import type { Mission, Status } from './types';
 
@@ -223,5 +223,3 @@ export const App = () => {
     </>
   );
 };
-
-export default App;
