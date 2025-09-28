@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const LoadingSpinnerIcon = ({ className = 'w-5 h-5' }) => (
   <svg
     className={`animate-spin ${className}`}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { LoadingSpinnerIcon } from './icons/LoadingSpinnerIcon';
 import { CheckCircleIcon } from './icons/CheckCircleIcon';
 import { XCircleIcon } from './icons/XCircleIcon';

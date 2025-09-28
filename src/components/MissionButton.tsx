@@ -1,4 +1,3 @@
-import React from 'react';
 import { LoadingSpinnerIcon } from './icons/LoadingSpinnerIcon';
 
 interface MissionButtonProps {

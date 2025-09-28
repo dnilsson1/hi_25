@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface SettingsPanelProps {
     isOpen: boolean;
     ipAddress: string;
