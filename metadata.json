@@ -1,0 +1,5 @@
+{
+  "name": "KUKA AMR Mission Control",
+  "description": "A web interface to dispatch missions to KUKA Automated Mobile Robots (AMRs). This application allows users to select different workstation profiles and send pre-defined mission commands to the AMR fleet management system.",
+  "requestFramePermissions": []
+}
