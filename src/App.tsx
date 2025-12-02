@@ -118,26 +118,20 @@ export const App = () => {
     }
 
     const targetUrl = mission.templateCode === 'outbound'
-      ? `http://${ipAddress}:${port}/api/amr/containerOut`
-      : `http://${ipAddress}:${port}/interfaces/api/amr/submitMission`;
+      ? `https://${ipAddress}:${port}/api/amr/containerOut`
+      : `https://${ipAddress}:${port}/interfaces/api/amr/submitMission`;
 
-    // Use local proxy if on HTTPS
-    const useProxy = window.location.protocol === 'https:';
-    const fetchUrl = useProxy ? '/api/proxy' : targetUrl;
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
     };
 
-    if (useProxy) {
-      headers['X-Target-URL'] = targetUrl;
-    }
-
     console.log('Dispatching Mission:', JSON.stringify(payload, null, 2));
+    console.log(`Fetch URL: ${targetUrl}`);
     setStatus({ type: 'loading', message: `Dispatching '${mission.label}'...` });
     setLoadingMission(mission.label);
 
     try {
-      const response = await fetch(fetchUrl, {
+      const response = await fetch(targetUrl, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(payload),
@@ -153,9 +147,6 @@ export const App = () => {
       } else {
         const text = await response.text();
         console.log('Response Text:', text);
-        // If we read text, we can't read json later, so we treat text as data if needed or just leave responseData undefined
-        // But the original code logic relied on responseData for error message.
-        // If it's not JSON, responseData remains undefined, which matches original logic.
       }
 
       if (!response.ok) {
@@ -169,11 +160,7 @@ export const App = () => {
       console.error('Failed to dispatch mission:', error);
       let errorMessage: string;
       if (error instanceof TypeError) {
-        if (window.location.protocol === 'https:') {
-          errorMessage = "Mixed Content Error: Cannot connect to a local 'http' device from a secure 'https' page.";
-        } else {
-          errorMessage = `Network error. Could not connect to ${ipAddress}:${port}. Check IP/Port and network connection.`;
-        }
+        errorMessage = `Network error. Could not connect to ${ipAddress}:${port}. Check IP/Port, network connection, and ensure SSL is trusted.`;
       } else if (error instanceof Error) {
         errorMessage = error.message;
       } else {
