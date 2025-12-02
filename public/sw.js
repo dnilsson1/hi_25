@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kuka-amr-v1';
+const CACHE_NAME = 'kuka-amr-v2';
 const urlsToCache = [
   '/hi_25/',
   '/hi_25/index.html',
@@ -9,6 +9,8 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', (event) => {
+  // Force the waiting service worker to become the active service worker.
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
@@ -22,10 +24,34 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
+        // Cache hit - return response
         if (response) {
           return response;
         }
-        return fetch(event.request);
+        return fetch(event.request).then(
+          (response) => {
+            // Check if we received a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Clone the response. A response is a stream
+            // and because we want the browser to consume the response
+            // as well as the cache consuming the response, we need
+            // to clone it so we have two streams.
+            const responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                // Don't cache API calls or other external requests if not intended
+                if (event.request.url.startsWith(self.location.origin)) {
+                  cache.put(event.request, responseToCache);
+                }
+              });
+
+            return response;
+          }
+        );
       })
   );
 });
@@ -41,6 +67,9 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
+    }).then(() => {
+      // Tell the active service worker to take control of the page immediately.
+      return self.clients.claim();
     })
   );
 });
