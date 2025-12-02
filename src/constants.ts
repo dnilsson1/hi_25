@@ -1,6 +1,6 @@
 import type { Mission } from './types';
 
-export const ORG_ID = 'factory';
+export const ORG_ID = 'Herning';
 
 export const PROFILE_2_MISSIONS: Mission[] = [
     {
